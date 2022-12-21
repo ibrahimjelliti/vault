@@ -63,7 +63,7 @@ jobs:
       - name: Clean up abandoned resources
         run: |
           # this without --no-dry-run will just print what would change (for testing)
-          aws-nuke -c aws-nuke.yml -q --force || true
+          aws-nuke -c aws-nuke.yml -q --force | tee output.log | grep -v "level=error" || true
 
   check-quotas:
     needs: [ setup, aws-nuke ]
