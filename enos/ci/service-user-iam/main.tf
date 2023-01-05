@@ -43,10 +43,17 @@ resource "aws_iam_role_policy" "role_policy" {
   provider = aws.us_east_1
   role     = aws_iam_role.role.name
   name     = "${local.service_user}_policy"
-  policy   = data.aws_iam_policy_document.iam_policy_document.json
+  policy   = data.aws_iam_policy_document.combined_policy_document.json
 }
 
-data "aws_iam_policy_document" "iam_policy_document" {
+data "aws_iam_policy_document" "combined_policy_document" {
+  source_policy_documents = [
+    data.aws_iam_policy_document.enos_policy_document.json,
+    data.aws_iam_policy_document.aws_nuke_policy_document.json
+  ]
+}
+
+data "aws_iam_policy_document" "enos_policy_document" {
   provider = aws.us_east_1
   statement {
     effect = "Allow"
@@ -145,3 +152,31 @@ data "aws_iam_policy_document" "iam_policy_document" {
     resources = ["*"]
   }
 }
+
+data "aws_iam_policy_document" "aws_nuke_policy_document" {
+  provider = aws.us_east_1
+  statement {
+    effect = "Allow"
+    actions = [
+      "ec2:DescribeInternetGateways",
+      "ec2:DescribeNatGateways",
+      "ec2:DescribeRegions",
+      "ec2:DescribeVpnGateways",
+      "iam:DeleteAccessKey",
+      "iam:DeleteUser",
+      "iam:DeleteUserPolicy",
+      "iam:GetUser",
+      "iam:ListAccessKeys",
+      "iam:ListAccountAliases",
+      "iam:ListAccountAliases",
+      "iam:ListGroupsForUser",
+      "iam:ListUserPolicies",
+      "iam:ListUsers",
+      "iam:ListUserTags",
+      "iam:UntagUser",
+      "servicequotas:ListServiceQuotas",
+    ]
+    resources = ["*"]
+  }
+}
+
