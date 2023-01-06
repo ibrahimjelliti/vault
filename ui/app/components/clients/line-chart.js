@@ -47,7 +47,7 @@ export default class LineChart extends Component {
 
   get upgradeData() {
     const upgradeData = this.args.upgradeData;
-    if (!upgradeData) return null;
+    if (!upgradeData || upgradeData.length === 0) return null;
     if (!Array.isArray(upgradeData)) {
       console.debug('upgradeData must be an array of objects containing upgrade history'); // eslint-disable-line
       return null;
